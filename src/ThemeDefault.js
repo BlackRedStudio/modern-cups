@@ -15,7 +15,6 @@ let themeDefault = createMuiTheme({
 					maxWidth: '100%',
 					verticalAlign: 'middle',
 				},
-
 				code: {
 					fontFamily:
 						'source-code-pro, Menlo, Monaco, Consolas, Courier New, monospace',

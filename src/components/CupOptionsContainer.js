@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+
+import { addTextToCup } from '../redux/cup/cup-actions'
 
 import { Box, Grid } from '@material-ui/core';
 
@@ -63,6 +66,7 @@ class CupOptionsContainer extends Component {
 
 	changeFieldText = e => {
 		const { textFieldsArray } = this.state;
+		const { rerenderParentCallback } = this.props;
 
 		const fieldIndex = e.target.getAttribute('index');
 
@@ -76,11 +80,16 @@ class CupOptionsContainer extends Component {
 		this.setState({
 			textFieldsArray,
 		});
+		rerenderParentCallback();
 	};
+
+	componentDidUpdate() {
+		const { textFieldsArray } = this.state;
+		this.props.addTextToCup(textFieldsArray);
+	}
 
 	render() {
 		const { textFieldsArray, textFieldsError, textFieldsErrorMessage } = this.state;
-
 		return (
 			<Box p={4}>
 				<Grid container spacing={4}>
@@ -107,4 +116,8 @@ class CupOptionsContainer extends Component {
 	}
 }
 
-export default CupOptionsContainer;
+const mapDispatchToProps = dispatch => ({
+	addTextToCup: text => dispatch( addTextToCup(text) ),
+})
+
+export default connect(null, mapDispatchToProps)(CupOptionsContainer);

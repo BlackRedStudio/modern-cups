@@ -1,3 +1,3 @@
-export default const cupActionTypes = {
-    SET_NEW_CUP: 'SET_NEW_CUP'
+export const cupActionTypes = {
+    SET_NEW_TEXT: 'SET_NEW_TEXT'
 }

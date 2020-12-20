@@ -1,15 +1,15 @@
-import cupActionTypes from './cup-actions';
+import { cupActionTypes } from './cup-types';
 
 const INITIAL_STATE = {
-    content: ''
+    cupText: []
 }
 
 const cupReducer = (state = INITIAL_STATE, action) => {
     switch(action.type) {
-        case cupActionTypes.SET_NEW_CUP:
+        case cupActionTypes.SET_NEW_TEXT:
             return {
                 ...state,
-                currentCup: action.payload
+                cupText: action.payload
             };
         default:
             return state;
