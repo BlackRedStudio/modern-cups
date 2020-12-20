@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import { Box, Grid } from '@material-ui/core';
 
-import AddContentField from './cup-options/AddContentField';
+import AddRemoveContentField from './cup-options/AddRemoveContentField';
 
 class CupOptionsContainer extends Component {
 	state = {
@@ -14,7 +14,8 @@ class CupOptionsContainer extends Component {
 				error: null,
 			},
 		],
-		textFieldsError: null,
+		textFieldsError: 2,
+		textFieldsErrorMessage: 'Nie można usunąć pierwotnego pola tekstowego',
 	};
 
 	addFieldText = () => {
@@ -32,14 +33,33 @@ class CupOptionsContainer extends Component {
 
 			this.setState({
 				textFieldsArray: [...textFieldsArray, textField],
+				textFieldsError: null,
+				textFieldsErrorMessage: null,
 			});
 		}
 		if (textFieldsArray.length > 2) {
 			this.setState({
-				textFieldsError: 'Maksymalna liczba treści to 4',
+				textFieldsError: 1,
+				textFieldsErrorMessage: 'Maksymalna liczba treści to 4',
 			});
 		}
 	};
+
+	removeFieldText = () => {
+		const { textFieldsArray } = this.state;
+
+		if (textFieldsArray.length > 1) {
+			this.setState({
+				textFieldsArray: textFieldsArray.slice(0, -1),
+			});
+		}
+		if(textFieldsArray.length < 3) {
+			this.setState({
+				textFieldsError: 2,
+				textFieldsErrorMessage: 'Nie można usunąć pierwotnego pola tekstowego',
+			});
+		}
+	}
 
 	changeFieldText = e => {
 		const { textFieldsArray } = this.state;
@@ -59,16 +79,18 @@ class CupOptionsContainer extends Component {
 	};
 
 	render() {
-		const { textFieldsArray, textFieldsError } = this.state;
+		const { textFieldsArray, textFieldsError, textFieldsErrorMessage } = this.state;
 
 		return (
 			<Box p={4}>
 				<Grid container spacing={4}>
 					<Grid item xs={12} md={6}>
-						<AddContentField
+						<AddRemoveContentField
 							textFieldsArray={textFieldsArray}
 							click={this.addFieldText}
+							clickSecond={this.removeFieldText}
 							textFieldsError={textFieldsError}
+							textFieldsErrorMessage={textFieldsErrorMessage}
 							change={this.changeFieldText}
 						/>
 					</Grid>

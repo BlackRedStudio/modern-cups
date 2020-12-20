@@ -11,6 +11,7 @@ import CreatePage from './pages/CreatePage';
 import ContactPage from './pages/ContactPage';
 import Error404Page from './pages/Error404Page';
 import Footer from './layouts/Footer';
+import ScrollToTop from './components/ScrollToTop';
 
 class App extends Component {
 	state = {};
@@ -19,6 +20,7 @@ class App extends Component {
 			<Router>
 				<ThemeProvider theme={themeDefault}>
 					<CssBaseline />
+					<ScrollToTop />
 					<Header />
 					<main>
 						<Switch>
