@@ -11,6 +11,7 @@ const AddRemoveContentField = ({
 	textFieldsErrorMessage,
 	clickSecond,
 	change,
+	focus
 }) => {
 
 	const theme = useTheme();
@@ -29,6 +30,7 @@ const AddRemoveContentField = ({
 			}}
 			helperText={error}
 			onChange={change}
+			onFocus={focus}
 		/>
 	));
 

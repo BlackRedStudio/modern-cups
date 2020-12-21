@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { addTextToCup } from '../redux/cup/cup-actions'
 
-import { Box, Grid } from '@material-ui/core';
+import { Box, Grid, TextField } from '@material-ui/core';
 
 import AddRemoveContentField from './cup-options/AddRemoveContentField';
 
@@ -15,10 +15,13 @@ class CupOptionsContainer extends Component {
 				label: 'Treść nr',
 				value: '',
 				error: null,
+				fontSize: 16,
+				color: '#000'
 			},
 		],
 		textFieldsError: 2,
 		textFieldsErrorMessage: 'Nie można usunąć pierwotnego pola tekstowego',
+		currentTextFieldsOptions: 0
 	};
 
 	addFieldText = () => {
@@ -32,6 +35,8 @@ class CupOptionsContainer extends Component {
 				label: 'Treść nr',
 				value: '',
 				error: null,
+				fontSize: 16,
+				color: '#000'
 			};
 
 			this.setState({
@@ -62,11 +67,13 @@ class CupOptionsContainer extends Component {
 				textFieldsErrorMessage: 'Nie można usunąć pierwotnego pola tekstowego',
 			});
 		}
+		this.setState({
+			currentTextFieldsOptions: 0
+		})
 	}
 
 	changeFieldText = e => {
 		const { textFieldsArray } = this.state;
-		const { rerenderParentCallback } = this.props;
 
 		const fieldIndex = e.target.getAttribute('index');
 
@@ -80,8 +87,29 @@ class CupOptionsContainer extends Component {
 		this.setState({
 			textFieldsArray,
 		});
-		rerenderParentCallback();
 	};
+	changeInputField = e => {
+		const { textFieldsArray } = this.state;
+		const fieldIndex = e.target.getAttribute('index');
+		const inputType = e.target.getAttribute('inputType');
+
+		if(inputType === 'fontSize') {
+			textFieldsArray[fieldIndex].fontSize = e.target.value;
+		} else {
+			textFieldsArray[fieldIndex].color = e.target.value;
+		}
+
+
+		this.setState({
+			textFieldsArray,
+		});
+	}
+	focusFieldText = e => {
+		let currAttr = e.target.getAttribute('index');
+		this.setState({
+			currentTextFieldsOptions: currAttr - 1
+		})
+	}
 
 	componentDidUpdate() {
 		const { textFieldsArray } = this.state;
@@ -89,7 +117,7 @@ class CupOptionsContainer extends Component {
 	}
 
 	render() {
-		const { textFieldsArray, textFieldsError, textFieldsErrorMessage } = this.state;
+		const { textFieldsArray, textFieldsError, textFieldsErrorMessage, currentTextFieldsOptions } = this.state;
 		return (
 			<Box p={4}>
 				<Grid container spacing={4}>
@@ -101,14 +129,30 @@ class CupOptionsContainer extends Component {
 							textFieldsError={textFieldsError}
 							textFieldsErrorMessage={textFieldsErrorMessage}
 							change={this.changeFieldText}
+							focus={this.focusFieldText}
 						/>
 					</Grid>
 					<Grid item xs={12} md={6}>
-						{/* <TextField
-							fullWidth={true}
-							id="cup-content"
-							label="Treść"
-						/> */}
+					<TextField
+						inputProps={{
+							index: currentTextFieldsOptions,
+							inputType: 'fontSize'
+						}}
+						label="Rozmiar czcionki"
+						type="number"
+						value={textFieldsArray[currentTextFieldsOptions].fontSize}
+						onChange={this.changeInputField}
+					/>
+					<TextField
+						inputProps={{
+							index: currentTextFieldsOptions,
+							inputType: 'color'
+						}}
+						label="Kolor"
+						type="color"
+						value={textFieldsArray[currentTextFieldsOptions].color}
+						onChange={this.changeInputField}
+					/>
 					</Grid>
 				</Grid>
 			</Box>
