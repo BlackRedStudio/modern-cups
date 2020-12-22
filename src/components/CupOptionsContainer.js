@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { addTextToCup } from '../redux/cup/cup-actions'
+import { addTextToCup } from '../redux/cup/cup-actions';
 
 import { Box, Grid, TextField } from '@material-ui/core';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
 import AddRemoveContentField from './cup-options/AddRemoveContentField';
 
@@ -16,13 +17,16 @@ class CupOptionsContainer extends Component {
 				value: '',
 				error: null,
 				fontSize: 16,
-				color: '#000'
+				color: '#000',
+				font: null,
 			},
 		],
 		textFieldsError: 2,
 		textFieldsErrorMessage: 'Nie można usunąć pierwotnego pola tekstowego',
-		currentTextFieldsOptions: 0
+		currentTextFieldsOptions: 0,
+		fontData: null,
 	};
+	limitUpdate = false;
 
 	addFieldText = () => {
 		const { textFieldsArray } = this.state;
@@ -36,7 +40,7 @@ class CupOptionsContainer extends Component {
 				value: '',
 				error: null,
 				fontSize: 16,
-				color: '#000'
+				color: '#000',
 			};
 
 			this.setState({
@@ -61,16 +65,16 @@ class CupOptionsContainer extends Component {
 				textFieldsArray: textFieldsArray.slice(0, -1),
 			});
 		}
-		if(textFieldsArray.length < 3) {
+		if (textFieldsArray.length < 3) {
 			this.setState({
 				textFieldsError: 2,
 				textFieldsErrorMessage: 'Nie można usunąć pierwotnego pola tekstowego',
 			});
 		}
 		this.setState({
-			currentTextFieldsOptions: 0
-		})
-	}
+			currentTextFieldsOptions: 0,
+		});
+	};
 
 	changeFieldText = e => {
 		const { textFieldsArray } = this.state;
@@ -78,11 +82,10 @@ class CupOptionsContainer extends Component {
 		const fieldIndex = e.target.getAttribute('index');
 
 		if (e.target.value.length < 33) {
-            textFieldsArray[fieldIndex - 1].error = null;
+			textFieldsArray[fieldIndex - 1].error = null;
 			textFieldsArray[fieldIndex - 1].value = e.target.value;
 		} else {
-			textFieldsArray[fieldIndex - 1].error =
-				'Maksymalna długość tekstu to 32 znaki';
+			textFieldsArray[fieldIndex - 1].error = 'Maksymalna długość tekstu to 32 znaki';
 		}
 		this.setState({
 			textFieldsArray,
@@ -91,33 +94,57 @@ class CupOptionsContainer extends Component {
 	changeInputField = e => {
 		const { textFieldsArray } = this.state;
 		const fieldIndex = e.target.getAttribute('index');
-		const inputType = e.target.getAttribute('inputType');
+		const inputType = e.target.getAttribute('input_type');
 
-		if(inputType === 'fontSize') {
+		if (inputType === 'default') {
 			textFieldsArray[fieldIndex].fontSize = e.target.value;
-		} else {
+			textFieldsArray[fieldIndex].font = e.target.value;
+			this.setState({
+				textFieldsArray,
+			});
+		} else if (inputType === 'color') {
 			textFieldsArray[fieldIndex].color = e.target.value;
+			if (this.limitUpdate === false) {
+				this.limitUpdate = true;
+				setTimeout(() => {
+					this.setState({
+						textFieldsArray,
+					});
+					this.limitUpdate = false;
+				}, 500);
+			}
 		}
-
-
-		this.setState({
-			textFieldsArray,
-		});
-	}
+	};
 	focusFieldText = e => {
 		let currAttr = e.target.getAttribute('index');
 		this.setState({
-			currentTextFieldsOptions: currAttr - 1
-		})
-	}
+			currentTextFieldsOptions: currAttr - 1,
+		});
+	};
 
 	componentDidUpdate() {
 		const { textFieldsArray } = this.state;
 		this.props.addTextToCup(textFieldsArray);
 	}
+	componentDidMount() {
+		let apiKey = 'AIzaSyDS3_wxnGJUlvJZ_SvQySSI9tGuFos3BKQ';
 
+		fetch('https://www.googleapis.com/webfonts/v1/webfonts?key=' + apiKey)
+			.then(res => res.json())
+			.then(({ items }) =>
+				this.setState({
+					fontData: items,
+				})
+			);
+	}
 	render() {
-		const { textFieldsArray, textFieldsError, textFieldsErrorMessage, currentTextFieldsOptions } = this.state;
+		const {
+			textFieldsArray,
+			textFieldsError,
+			textFieldsErrorMessage,
+			currentTextFieldsOptions,
+			fontData,
+		} = this.state;
 		return (
 			<Box p={4}>
 				<Grid container spacing={4}>
@@ -133,26 +160,48 @@ class CupOptionsContainer extends Component {
 						/>
 					</Grid>
 					<Grid item xs={12} md={6}>
-					<TextField
-						inputProps={{
-							index: currentTextFieldsOptions,
-							inputType: 'fontSize'
-						}}
-						label="Rozmiar czcionki"
-						type="number"
-						value={textFieldsArray[currentTextFieldsOptions].fontSize}
-						onChange={this.changeInputField}
-					/>
-					<TextField
-						inputProps={{
-							index: currentTextFieldsOptions,
-							inputType: 'color'
-						}}
-						label="Kolor"
-						type="color"
-						value={textFieldsArray[currentTextFieldsOptions].color}
-						onChange={this.changeInputField}
-					/>
+						<TextField
+							inputProps={{
+								index: currentTextFieldsOptions,
+								input_type: 'default',
+							}}
+							label="Rozmiar czcionki"
+							type="number"
+							value={textFieldsArray[currentTextFieldsOptions].fontSize}
+							onChange={this.changeInputField}
+						/>
+						<TextField
+							inputProps={{
+								index: currentTextFieldsOptions,
+								input_type: 'color',
+							}}
+							label="Kolor"
+							type="color"
+							value={textFieldsArray[currentTextFieldsOptions].color}
+							onChange={this.changeInputField}
+							style={{ width: 30 }}
+						/>
+						{fontData && (
+							<Autocomplete
+								options={fontData}
+								getOptionLabel={option => option.family}
+								autoHighlight
+								renderInput={params => (
+									<TextField
+										{...params}
+										inputProps={{
+											...params.inputProps,
+											index: currentTextFieldsOptions,
+											input_type: 'default',
+										}}
+										label="Combo box"
+										variant="outlined"
+										onChange={this.changeInputField}
+										value={textFieldsArray[currentTextFieldsOptions].font}
+									/>
+								)}
+							/>
+						)}
 					</Grid>
 				</Grid>
 			</Box>
@@ -161,7 +210,7 @@ class CupOptionsContainer extends Component {
 }
 
 const mapDispatchToProps = dispatch => ({
-	addTextToCup: text => dispatch( addTextToCup(text) ),
-})
+	addTextToCup: text => dispatch(addTextToCup(text)),
+});
 
 export default connect(null, mapDispatchToProps)(CupOptionsContainer);

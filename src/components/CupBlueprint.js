@@ -3,13 +3,10 @@ import { connect } from 'react-redux';
 
 import subjx from 'subjx';
 import 'subjx/dist/style/subjx.css';
-
-import { selectCupText } from '../redux/cup/cup-selectors';
+import BlueprintText from './cup-blueprint-elements/BlueprintText';
 
 class CupBlueprint extends Component {
-    state = {
-        test: ''
-    }
+
 	xDraggables = {};
 	isRotating = false;
 
@@ -34,9 +31,6 @@ class CupBlueprint extends Component {
 				}, 100);
 			}
         });
-        this.setState({
-            test: 'asdasd'
-        })
 
     }
 	componentDidMount() {
@@ -51,21 +45,11 @@ class CupBlueprint extends Component {
 			}
         });
     }
-    componentDidUpdate() {
-        let el = document.querySelectorAll('.text-draggable');
-        el.forEach(val=>{
-            val.style.fontSize = val.getAttribute('font')+'px';
-            val.style.color = val.getAttribute('color');
-        });
-    }
-
 
 	render() {
-
-		let cupTextsTemplate = this.props.cupText.map(({id, value, fontSize, color}) => (
-			<div key={id} className="text-draggable"
-            style={{position: 'absolute', 'left': 30, 'top': 30, padding: 20}}
-            font={fontSize} color={color} onClick={this.handleTextClick.bind(this)}>{value}</div>
+		const cupText = this.props.cup.cupText;
+		let cupTextsTemplate = cupText.map(props => (
+			<BlueprintText key={props.id} props={props} click={this.handleTextClick.bind(this)} />
         ));
 
 		return (
@@ -82,7 +66,7 @@ class CupBlueprint extends Component {
 };
 
 const mapStateToProps = state => ({
-	cupText: JSON.parse(JSON.stringify(selectCupText(state)))
+	cup: state.cup
 })
 
 export default connect(mapStateToProps)(CupBlueprint);
