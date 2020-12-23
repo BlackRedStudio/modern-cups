@@ -18,7 +18,7 @@ class CupOptionsContainer extends Component {
 				error: null,
 				fontSize: 16,
 				color: '#000',
-				font: null,
+				fontFamily: ''
 			},
 		],
 		textFieldsError: 2,
@@ -41,6 +41,7 @@ class CupOptionsContainer extends Component {
 				error: null,
 				fontSize: 16,
 				color: '#000',
+				fontFamily: ''
 			};
 
 			this.setState({
@@ -93,12 +94,26 @@ class CupOptionsContainer extends Component {
 	};
 	changeInputField = e => {
 		const { textFieldsArray } = this.state;
-		const fieldIndex = e.target.getAttribute('index');
-		const inputType = e.target.getAttribute('input_type');
+		let fieldIndex = 0;
+		let inputType = '';
 
-		if (inputType === 'default') {
-			textFieldsArray[fieldIndex].fontSize = e.target.value;
-			textFieldsArray[fieldIndex].font = e.target.value;
+		if(e.target.tagName === 'LI') {
+			fieldIndex = e.target.parentNode.getAttribute('index');
+			inputType = e.target.parentNode.getAttribute('input_type');
+		} else {
+			fieldIndex = e.target.getAttribute('index');
+			inputType = e.target.getAttribute('input_type');
+		}
+		if (inputType !== 'color') {
+				if(inputType === 'fontSize') {
+					textFieldsArray[fieldIndex].fontSize = e.target.value;
+				} else if(inputType === 'fontFamily') {
+					textFieldsArray[fieldIndex].fontFamily = e.target.value;
+				}
+				else if(inputType === 'fontFamilySelectbox') {
+					textFieldsArray[fieldIndex].fontFamily = e.target.innerText;
+				}
+				console.log(e.target)
 			this.setState({
 				textFieldsArray,
 			});
@@ -163,7 +178,7 @@ class CupOptionsContainer extends Component {
 						<TextField
 							inputProps={{
 								index: currentTextFieldsOptions,
-								input_type: 'default',
+								input_type: 'fontSize',
 							}}
 							label="Rozmiar czcionki"
 							type="number"
@@ -183,21 +198,27 @@ class CupOptionsContainer extends Component {
 						/>
 						{fontData && (
 							<Autocomplete
+							style={{marginTop: 24}}
 								options={fontData}
 								getOptionLabel={option => option.family}
 								autoHighlight
+								onChange={this.changeInputField}
+								ListboxProps={{
+									index: currentTextFieldsOptions,
+									input_type: 'fontFamilySelectbox',
+								}}
+								inputValue={textFieldsArray[currentTextFieldsOptions].fontFamily}
 								renderInput={params => (
 									<TextField
 										{...params}
 										inputProps={{
 											...params.inputProps,
 											index: currentTextFieldsOptions,
-											input_type: 'default',
+											input_type: 'fontFamily',
 										}}
-										label="Combo box"
+										label="Wybierz czcionkę"
 										variant="outlined"
 										onChange={this.changeInputField}
-										value={textFieldsArray[currentTextFieldsOptions].font}
 									/>
 								)}
 							/>
