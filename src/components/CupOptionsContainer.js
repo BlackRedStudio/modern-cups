@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
+import html2canvas from 'html2canvas';
+
 import { addTextToCup } from '../redux/cup/cup-actions';
 
-import { Box, Grid, TextField } from '@material-ui/core';
+import { Box, Grid, TextField, Button } from '@material-ui/core';
+import SaveIcon from '@material-ui/icons/Save';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
 import AddRemoveContentField from './cup-options/AddRemoveContentField';
@@ -152,6 +155,12 @@ class CupOptionsContainer extends Component {
 				})
 			);
 	}
+	takeScreenshot() {
+		let elToScreenshot = document.getElementById('containerParent');
+		html2canvas(elToScreenshot).then(function(canvas) {
+			document.body.appendChild(canvas);
+		});
+	}
 	render() {
 		const {
 			textFieldsArray,
@@ -173,6 +182,15 @@ class CupOptionsContainer extends Component {
 							change={this.changeFieldText}
 							focus={this.focusFieldText}
 						/>
+						<Button
+								variant="contained"
+								color="primary"
+								size="large"
+								startIcon={<SaveIcon />}
+								onClick={this.takeScreenshot}
+						>
+								Save
+						</Button>
 					</Grid>
 					<Grid item xs={12} md={6}>
 						<TextField

@@ -56,7 +56,7 @@ class CupBlueprint extends Component {
 			<div id="containerParent" style={{'position': 'relative'}}>
                 <img
                 style={{width: '100%'}}
-                    src="https://via.placeholder.com/900x900"
+                    src="./img/kubek1.jpg"
                     alt="Banner"
                 />
                 {cupTextsTemplate}
