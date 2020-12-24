@@ -5,7 +5,7 @@ import html2canvas from 'html2canvas';
 
 import { addTextToCup } from '../redux/cup/cup-actions';
 
-import { Box, Grid, TextField, Button } from '@material-ui/core';
+import { Box, Grid, TextField, Button, FormControl, InputLabel, Select, Typography } from '@material-ui/core';
 import SaveIcon from '@material-ui/icons/Save';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
@@ -21,7 +21,10 @@ class CupOptionsContainer extends Component {
 				error: null,
 				fontSize: 16,
 				color: '#000',
-				fontFamily: ''
+				fontFamily: '',
+				variants: null,
+				fontWeight: null,
+				fontStyle: 'normal'
 			},
 		],
 		textFieldsError: 2,
@@ -44,7 +47,10 @@ class CupOptionsContainer extends Component {
 				error: null,
 				fontSize: 16,
 				color: '#000',
-				fontFamily: ''
+				fontFamily: '',
+				variants: null,
+				fontWeight: null,
+				fontStyle: 'normal'
 			};
 
 			this.setState({
@@ -95,12 +101,11 @@ class CupOptionsContainer extends Component {
 			textFieldsArray,
 		});
 	};
-	changeInputField = e => {
-		const { textFieldsArray } = this.state;
+	changeInputField = (e, value = null, reason = null, option = null, fieldIndexParam = null) => {
+		const { textFieldsArray, fontData } = this.state;
 		let fieldIndex = 0;
 		let inputType = '';
-
-		if(e.target.tagName === 'LI') {
+		if (e.target.tagName === 'LI') {
 			fieldIndex = e.target.parentNode.getAttribute('index');
 			inputType = e.target.parentNode.getAttribute('input_type');
 		} else {
@@ -108,15 +113,40 @@ class CupOptionsContainer extends Component {
 			inputType = e.target.getAttribute('input_type');
 		}
 		if (inputType !== 'color') {
-				if(inputType === 'fontSize') {
-					textFieldsArray[fieldIndex].fontSize = e.target.value;
-				} else if(inputType === 'fontFamily') {
-					textFieldsArray[fieldIndex].fontFamily = e.target.value;
-				}
-				else if(inputType === 'fontFamilySelectbox') {
-					textFieldsArray[fieldIndex].fontFamily = e.target.innerText;
-				}
-				console.log(e.target)
+			let fontFamily = '';
+			if (inputType === 'fontSize') {
+				textFieldsArray[fieldIndex].fontSize = e.target.value;
+			} else if (inputType === 'fontFamily') {
+				fontFamily = e.target.value;
+				textFieldsArray[fieldIndex].fontFamily = fontFamily;
+			} else if (inputType === 'fontFamilySelectbox') {
+				fontFamily = e.target.innerText;
+				textFieldsArray[fieldIndex].fontFamily = fontFamily;
+			} else if(inputType === 'fontVariantSelectbox') {
+				let fontWeight = e.target.value.match(/\d+/);
+				let fontStyle = e.target.value.match(/italic/i);
+				let isRegular = e.target.value.match(/regular/i);
+				if(fontWeight)
+					textFieldsArray[fieldIndex].fontWeight = fontWeight[0];
+				if(isRegular || (!fontWeight && fontStyle))
+					textFieldsArray[fieldIndex].fontWeight = '400';
+				if(fontStyle)
+					textFieldsArray[fieldIndex].fontStyle = fontStyle[0];
+				else
+				textFieldsArray[fieldIndex].fontStyle = 'normal';
+			}
+			if (inputType === 'fontFamily' || inputType === 'fontFamilySelectbox') {
+				textFieldsArray[fieldIndex].fontWeight = '400';
+				textFieldsArray[fieldIndex].fontStyle = 'normal';
+				let moreFontData = fontData.filter(v => v.family === fontFamily);
+				if(moreFontData[0])
+					textFieldsArray[fieldIndex].variants = moreFontData[0].variants;
+			}
+			if(reason === 'clear') {
+				textFieldsArray[fieldIndexParam].fontWeight = '400';
+				textFieldsArray[fieldIndexParam].fontStyle = 'normal';
+				textFieldsArray[fieldIndexParam].fontFamily = '';
+			}
 			this.setState({
 				textFieldsArray,
 			});
@@ -157,7 +187,7 @@ class CupOptionsContainer extends Component {
 	}
 	takeScreenshot() {
 		let elToScreenshot = document.getElementById('containerParent');
-		html2canvas(elToScreenshot).then(function(canvas) {
+		html2canvas(elToScreenshot).then(function (canvas) {
 			document.body.appendChild(canvas);
 		});
 	}
@@ -173,6 +203,7 @@ class CupOptionsContainer extends Component {
 			<Box p={4}>
 				<Grid container spacing={4}>
 					<Grid item xs={12} md={6}>
+						<Typography variant="subtitle1" align="center" paragraph color="initial">Dodaj treść</Typography>
 						<AddRemoveContentField
 							textFieldsArray={textFieldsArray}
 							click={this.addFieldText}
@@ -183,23 +214,29 @@ class CupOptionsContainer extends Component {
 							focus={this.focusFieldText}
 						/>
 						<Button
-								variant="contained"
-								color="primary"
-								size="large"
-								startIcon={<SaveIcon />}
-								onClick={this.takeScreenshot}
+							variant="contained"
+							color="primary"
+							size="large"
+							startIcon={<SaveIcon />}
+							onClick={this.takeScreenshot}
+							fullWidth
+							style={{marginTop: 8}}
 						>
-								Save
+							Save
 						</Button>
 					</Grid>
-					<Grid item xs={12} md={6}>
+					<Grid className="cup-options-right-panel" item xs={12} md={6}>
+						<Typography variant="subtitle1" align="center" paragraph color="initial">Edycja treści nr {currentTextFieldsOptions + 1}</Typography>
 						<TextField
 							inputProps={{
 								index: currentTextFieldsOptions,
 								input_type: 'fontSize',
+								min: "12",
+								max: "120"
 							}}
 							label="Rozmiar czcionki"
 							type="number"
+							style={{width: 170}}
 							value={textFieldsArray[currentTextFieldsOptions].fontSize}
 							onChange={this.changeInputField}
 						/>
@@ -216,16 +253,18 @@ class CupOptionsContainer extends Component {
 						/>
 						{fontData && (
 							<Autocomplete
-							style={{marginTop: 24}}
+								style={{ marginTop: 24 }}
 								options={fontData}
 								getOptionLabel={option => option.family}
 								autoHighlight
-								onChange={this.changeInputField}
+								onChange={(e, value, reason, option) => {
+									this.changeInputField(e, value, reason, option, currentTextFieldsOptions)
+								}}
 								ListboxProps={{
 									index: currentTextFieldsOptions,
 									input_type: 'fontFamilySelectbox',
 								}}
-								inputValue={textFieldsArray[currentTextFieldsOptions].fontFamily}
+								onKeyUp={e => e.keyCode === 13 && this.changeInputField(e)}
 								renderInput={params => (
 									<TextField
 										{...params}
@@ -236,11 +275,30 @@ class CupOptionsContainer extends Component {
 										}}
 										label="Wybierz czcionkę"
 										variant="outlined"
-										onChange={this.changeInputField}
+
 									/>
 								)}
 							/>
 						)}
+						{textFieldsArray[currentTextFieldsOptions].variants &&
+							<FormControl variant="outlined" fullWidth style={{ marginTop: 24 }}>
+								<InputLabel htmlFor="outlined-age-native-simple">Wariant czcionki</InputLabel>
+								<Select
+									native
+									onChange={this.changeInputField}
+									label="Wariant czcionki"
+									defaultValue="regular"
+									inputProps={{
+										index: currentTextFieldsOptions,
+										input_type: 'fontVariantSelectbox',
+									}}
+								>
+									{textFieldsArray[currentTextFieldsOptions].variants.map(v=>(
+										<option key={v} value={v}>{v}</option>
+									))}
+								</Select>
+							</FormControl>
+						}
 					</Grid>
 				</Grid>
 			</Box>

@@ -15,7 +15,6 @@ class CupBlueprint extends Component {
 		this.xDraggables = xElem.drag({
 			container: '#containerParent',
 			restrict: '#containerParent',
-			rotationPoint: true,
 			snap: {
 				x: 30,
 				y: 30,

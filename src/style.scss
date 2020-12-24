@@ -1,0 +1,12 @@
+.cup-options-right-panel {
+    opacity: 0;
+    animation: opacity .35s both;
+}
+@keyframes opacity {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}

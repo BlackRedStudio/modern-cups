@@ -2,16 +2,16 @@ import React from 'react';
 
 import WebFont from 'webfontloader';
 
-const BlueprintText = ({props: {fontSize, color, fontFamily, value}, click}) => {
+const BlueprintText = ({props: {fontSize, color, fontFamily, fontWeight, fontStyle, value}, click}) => {
 	WebFont.load({
 		google: {
-			families: [fontFamily]
+			families: [fontFamily+':'+fontWeight]
 		}
 	});
 	return (
 		<div
 			className="text-draggable"
-			style={{ position: 'absolute', left: 30, top: 30, padding: 20, fontSize: fontSize+'px', color: color, fontFamily: fontFamily }}
+			style={{ position: 'absolute', left: 30, top: 30, padding: 20, fontSize: fontSize+'px', color: color, fontFamily: fontFamily, fontWeight: fontWeight, fontStyle: fontStyle }}
 			onClick={click}
 		>
 			{value}

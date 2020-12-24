@@ -5,6 +5,8 @@ import { ThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { themeDefault } from './ThemeDefault';
 
+import './style.scss';
+
 import Header from './layouts/Header';
 import HomePage from './pages/HomePage';
 import CreatePage from './pages/CreatePage';
