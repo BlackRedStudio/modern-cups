@@ -31,6 +31,7 @@ class CupOptionsContainer extends Component {
 		textFieldsErrorMessage: 'Nie można usunąć pierwotnego pola tekstowego',
 		currentTextFieldsOptions: 0,
 		fontData: null,
+		emojiData: null,
 	};
 	limitUpdate = false;
 
@@ -88,12 +89,25 @@ class CupOptionsContainer extends Component {
 
 	changeFieldText = e => {
 		const { textFieldsArray } = this.state;
+		console.log(e.target)
 
 		const fieldIndex = e.target.getAttribute('index');
+		const isEmoji = e.target.getAttribute('emoji');
 
-		if (e.target.value.length < 33) {
+		let value = null;
+		let valueLength = 0;
+
+		if(!isEmoji) {
+			value = e.target.value;
+			valueLength = e.target.value.length;
+		} else {
+			value = textFieldsArray[fieldIndex - 1].value + e.target.innerText;
+			valueLength = textFieldsArray[fieldIndex - 1].value.length + 1;
+		}
+
+		if (valueLength < 33) {
 			textFieldsArray[fieldIndex - 1].error = null;
-			textFieldsArray[fieldIndex - 1].value = e.target.value;
+			textFieldsArray[fieldIndex - 1].value = value;
 		} else {
 			textFieldsArray[fieldIndex - 1].error = 'Maksymalna długość tekstu to 32 znaki';
 		}
@@ -175,15 +189,25 @@ class CupOptionsContainer extends Component {
 		this.props.addTextToCup(textFieldsArray);
 	}
 	componentDidMount() {
-		let apiKey = 'AIzaSyDS3_wxnGJUlvJZ_SvQySSI9tGuFos3BKQ';
+		let apiGoogleFontsKey = 'AIzaSyDS3_wxnGJUlvJZ_SvQySSI9tGuFos3BKQ';
 
-		fetch('https://www.googleapis.com/webfonts/v1/webfonts?key=' + apiKey)
+		fetch('https://www.googleapis.com/webfonts/v1/webfonts?key=' + apiGoogleFontsKey)
 			.then(res => res.json())
 			.then(({ items }) =>
 				this.setState({
 					fontData: items,
 				})
 			);
+
+		let apiEmojiKey = '57867ad3fe2e975e6e90fe7bbd60d50680f12fd7';
+
+		fetch('https://emoji-api.com/categories/smileys-emotion?access_key=' + apiEmojiKey)
+		.then(res => res.json())
+		.then(emojiData => {
+			this.setState({
+				emojiData
+			})
+		})
 	}
 	takeScreenshot() {
 		let elToScreenshot = document.getElementById('containerParent');
@@ -198,6 +222,7 @@ class CupOptionsContainer extends Component {
 			textFieldsErrorMessage,
 			currentTextFieldsOptions,
 			fontData,
+			emojiData,
 		} = this.state;
 		return (
 			<Box p={4}>
@@ -212,6 +237,8 @@ class CupOptionsContainer extends Component {
 							textFieldsErrorMessage={textFieldsErrorMessage}
 							change={this.changeFieldText}
 							focus={this.focusFieldText}
+							emojiData={emojiData}
+							handleEmojiClick={this.changeFieldText}
 						/>
 						<Button
 							variant="contained"
