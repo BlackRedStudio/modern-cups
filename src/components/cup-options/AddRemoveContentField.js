@@ -18,8 +18,8 @@ const useStyles = makeStyles(() => ({
 		padding: 10,
 		width: '100%',
 		right: 0,
-	}
-}))
+	},
+}));
 
 const AddRemoveContentField = ({
 	textFieldsArray,
@@ -37,14 +37,16 @@ const AddRemoveContentField = ({
 	const colorError = theme.palette.error.main;
 	const colorDefault = theme.palette.grey[300];
 
-	const [open, setOpen] = React.useState(false);
+	const [open, setOpen] = React.useState(0);
 
-	const handleEmojiIconClick = () => {
-		setOpen(prev => !prev);
+	const handleEmojiIconClick = e => {
+		let parentNode = e.target.nodeName === 'svg' ? e.target.parentNode : e.target.parentNode.parentNode;
+		let index = parseInt(parentNode.getAttribute('index'));
+		setOpen(index);
 	};
 
-	const handleClickAway = () => {
-		setOpen(false);
+	const handleClickAway = e => {
+		if (e.target.nodeName !== 'svg' && e.target.nodeName !== 'path') setOpen(0);
 	};
 
 	const textFields = textFieldsArray.map(({ id, label, value, error }) => (
@@ -57,23 +59,31 @@ const AddRemoveContentField = ({
 			inputProps={{
 				index: id,
 			}}
+			style={{position: 'relative'}}
 			InputProps={{
 				endAdornment: (
 					<ClickAwayListener onClickAway={handleClickAway}>
 						<div>
-							<InputAdornment style={{ cursor: 'pointer' }} onClick={handleEmojiIconClick}>
+							<InputAdornment style={{ cursor: 'pointer' }} index={id} onClick={handleEmojiIconClick}>
 								<InsertEmoticonIcon />
 							</InputAdornment>
-							{open ? <div className={classes.dropdown}>
-							{
-								emojiData !== null ?
-									emojiData.map(({ slug, character }) => (
-										<span className={classes.emojiWrapper} index={id} emoji="true" key={slug} onClick={handleEmojiClick}>
-											{character}
-										</span>
-									)) : null
-							}
-							</div> : null}
+							{open === id ? (
+								<div className={classes.dropdown}>
+									{emojiData !== null
+										? emojiData.map(({ slug, character }) => (
+												<span
+													className={classes.emojiWrapper}
+													index={id}
+													emoji="true"
+													key={slug}
+													onClick={handleEmojiClick}
+												>
+													{character}
+												</span>
+										  ))
+										: null}
+								</div>
+							) : null}
 						</div>
 					</ClickAwayListener>
 				),
@@ -85,7 +95,7 @@ const AddRemoveContentField = ({
 	));
 
 	return (
-		<>
+		<div>
 			{textFields}
 			<Box p={3} textAlign="center">
 				<Tooltip
@@ -111,7 +121,7 @@ const AddRemoveContentField = ({
 					</Fab>
 				</Tooltip>
 			</Box>
-		</>
+		</div>
 	);
 };
 
