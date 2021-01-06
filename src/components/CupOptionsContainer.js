@@ -10,6 +10,7 @@ import SaveIcon from '@material-ui/icons/Save';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
 import AddRemoveContentField from './cup-options/AddRemoveContentField';
+import AddRemoveImage from './cup-options/AddRemoveImage';
 
 class CupOptionsContainer extends Component {
 	state = {
@@ -89,7 +90,6 @@ class CupOptionsContainer extends Component {
 
 	changeFieldText = e => {
 		const { textFieldsArray } = this.state;
-		console.log(e.target)
 
 		const fieldIndex = e.target.getAttribute('index');
 		const isEmoji = e.target.getAttribute('emoji');
@@ -240,6 +240,7 @@ class CupOptionsContainer extends Component {
 							emojiData={emojiData}
 							handleEmojiClick={this.changeFieldText}
 						/>
+						<AddRemoveImage />
 						<Button
 							variant="contained"
 							color="primary"
