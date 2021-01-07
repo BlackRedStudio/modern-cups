@@ -64,7 +64,7 @@ class CupBlueprint extends Component {
 		));
 		return (
 			<div id="containerParent" style={{ position: 'relative' }}>
-				<img style={{ width: '100%' }} src="./img/kubek1.jpg" alt="Banner" />
+				<img style={{ width: '100%', objectFit: 'cover', maxHeight: 'calc(100vh - 64px)' }} src="./img/kubek1.jpg" alt="Banner" />
 				{cupImagesTemplate}
 				{cupTextsTemplate}
 			</div>

@@ -3,6 +3,7 @@ import { cupActionTypes } from './cup-types';
 const INITIAL_STATE = {
 	cupText: [],
 	cupImage: [{ key: 0, imgPreviewUrl: null, name: '' }],
+	previewImage: null
 };
 
 const cupReducer = (state = INITIAL_STATE, action) => {
@@ -33,6 +34,11 @@ const cupReducer = (state = INITIAL_STATE, action) => {
 			return {
 				...state,
 				cupImage: INITIAL_STATE.cupImage,
+			};
+		case cupActionTypes.SAVE_PREVIEW_IMAGE:
+			return {
+				...state,
+				previewImage: action.payload,
 			};
 		default:
 			return state;

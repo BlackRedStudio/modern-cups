@@ -1,15 +1,17 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import {Link as RouterLink} from 'react-router-dom'
 
 import { Grid, Typography, Box, Link } from '@material-ui/core';
 
-const Banner = () => {
+const Banner = ({previewImage}) => {
 	return (
 		<Box component="section" mb={2}>
 			<Grid container>
 				<Grid item xs={12} md={6}>
 					<img
-						src="https://via.placeholder.com/900x900"
+					style={{objectFit: 'cover'}}
+						src={previewImage || "https://via.placeholder.com/900x900"}
 						alt="Banner"
 					/>
 				</Grid>
@@ -59,4 +61,8 @@ const Banner = () => {
 	);
 };
 
-export default Banner;
+const mapStateToProps = state => ({
+	previewImage: state.cup.previewImage
+})
+
+export default connect(mapStateToProps)(Banner);

@@ -14,9 +14,11 @@ import ContactPage from './pages/ContactPage';
 import Error404Page from './pages/Error404Page';
 import Footer from './layouts/Footer';
 import ScrollToTop from './components/ScrollToTop';
+import PreviewWindow from './components/PreviewWindow';
 
 class App extends Component {
 	state = {};
+
 	render() {
 		return (
 			<Router>
@@ -28,17 +30,22 @@ class App extends Component {
 						<Switch>
 							<Route exact path="/">
 								<HomePage />
+								<Footer />
 							</Route>
 							<Route exact path="/create">
 								<CreatePage />
 							</Route>
 							<Route exact path="/contact">
 								<ContactPage />
+								<Footer />
 							</Route>
-							<Error404Page />
+							<div>
+								<Error404Page />
+								<Footer />
+							</div>
 						</Switch>
+						<PreviewWindow />
 					</main>
-					<Footer />
 				</ThemeProvider>
 			</Router>
 		);

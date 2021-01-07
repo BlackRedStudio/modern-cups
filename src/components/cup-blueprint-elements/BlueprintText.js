@@ -3,11 +3,13 @@ import React from 'react';
 import WebFont from 'webfontloader';
 
 const BlueprintText = ({props: {fontSize, color, fontFamily, fontWeight, fontStyle, value}, click}) => {
-	WebFont.load({
-		google: {
-			families: [fontFamily+':'+fontWeight]
-		}
-	});
+	if(fontFamily !== '') {
+		WebFont.load({
+			google: {
+				families: [fontFamily+':'+fontWeight]
+			}
+		});
+	}
 	return (
 		<div
 			className="text-draggable"

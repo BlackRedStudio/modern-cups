@@ -22,3 +22,8 @@ export const deleteImageFromCup = () => ({
 export const resetImages = () => ({
     type: cupActionTypes.RESET_IMAGES
 })
+
+export const savePreviewImage = canvas => ({
+    type: cupActionTypes.SAVE_PREVIEW_IMAGE,
+    payload: canvas
+})

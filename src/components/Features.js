@@ -27,7 +27,7 @@ const Features = () => {
                     <Grid container spacing={2}>
                         <Grid item xs={12} md={4}>
                         <Box textAlign="center" my={2}>
-                            <SettingsIcon style={styles.icons} />
+                            <SettingsIcon color="primary" style={styles.icons} />
 
                                 <Typography
                                     variant="h6"
@@ -39,7 +39,7 @@ const Features = () => {
                         </Grid>
                         <Grid item xs={12} md={4}>
                             <Box textAlign="center" my={2}>
-                            <HeightIcon style={styles.icons} />
+                            <HeightIcon color="primary" style={styles.icons} />
                                 <Typography
                                     variant="h6"
                                     variantMapping={{ h6: 'p' }}
@@ -50,7 +50,7 @@ const Features = () => {
                         </Grid>
                         <Grid item xs={12} md={4}>
                             <Box textAlign="center" my={2}>
-                            <PaletteIcon style={styles.icons} />
+                            <PaletteIcon color="primary" style={styles.icons} />
                                 <Typography
                                     variant="h6"
                                     variantMapping={{ h6: 'p' }}
@@ -61,7 +61,7 @@ const Features = () => {
                         </Grid>
                         <Grid item xs={12} md={4}>
                             <Box textAlign="center" my={2}>
-                            <LocalOfferIcon style={styles.icons} />
+                            <LocalOfferIcon color="primary" style={styles.icons} />
                                 <Typography
                                     variant="h6"
                                     variantMapping={{ h6: 'p' }}
@@ -72,7 +72,7 @@ const Features = () => {
                         </Grid>
                         <Grid item xs={12} md={4}>
                             <Box textAlign="center" my={2}>
-                            <FastForwardIcon style={styles.icons} />
+                            <FastForwardIcon color="primary" style={styles.icons} />
                                 <Typography
                                     variant="h6"
                                     variantMapping={{ h6: 'p' }}
@@ -83,7 +83,7 @@ const Features = () => {
                         </Grid>
                         <Grid item xs={12} md={4}>
                             <Box textAlign="center" my={2}>
-                            <PhoneIcon style={styles.icons} />
+                            <PhoneIcon color="primary" style={styles.icons} />
                                 <Typography
                                     variant="h6"
                                     variantMapping={{ h6: 'p' }}

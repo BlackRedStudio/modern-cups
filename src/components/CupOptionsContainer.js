@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import html2canvas from 'html2canvas';
 
-import { addTextToCup } from '../redux/cup/cup-actions';
+import { addTextToCup, savePreviewImage } from '../redux/cup/cup-actions';
 
 import { Box, Grid, TextField, Button, FormControl, InputLabel, Select, Typography } from '@material-ui/core';
 import SaveIcon from '@material-ui/icons/Save';
@@ -210,9 +210,10 @@ class CupOptionsContainer extends Component {
 		})
 	}
 	takeScreenshot() {
+		const { savePreviewImage } = this.props;
 		let elToScreenshot = document.getElementById('containerParent');
-		html2canvas(elToScreenshot).then(function (canvas) {
-			document.body.appendChild(canvas);
+		html2canvas(elToScreenshot).then( canvas => {
+			savePreviewImage(canvas.toDataURL());
 		});
 	}
 	render() {
@@ -246,7 +247,7 @@ class CupOptionsContainer extends Component {
 							color="primary"
 							size="large"
 							startIcon={<SaveIcon />}
-							onClick={this.takeScreenshot}
+							onClick={this.takeScreenshot.bind(this)}
 							fullWidth
 							style={{marginTop: 8}}
 						>
@@ -336,6 +337,7 @@ class CupOptionsContainer extends Component {
 
 const mapDispatchToProps = dispatch => ({
 	addTextToCup: text => dispatch(addTextToCup(text)),
+	savePreviewImage: canvas => dispatch(savePreviewImage(canvas)),
 });
 
 export default connect(null, mapDispatchToProps)(CupOptionsContainer);
