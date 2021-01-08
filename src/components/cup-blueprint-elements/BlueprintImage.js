@@ -1,11 +1,13 @@
 import React from 'react'
 
-const BlueprintImage = ({imgSrc, click}) => {
+const BlueprintImage = ({imgSrc, index, mouseOver}) => {
     return (
         <img
-            style={{ position: 'absolute', top: 0, left: 0, width: 100, objectFit: 'cover', borderRadius: 4 }}
+        className="image-draggable"
+            style={{ position: 'absolute', top: 30, left: 30, width: 100, objectFit: 'cover', borderRadius: 4 }}
             src={imgSrc}
-            onClick={click}
+            index={index}
+            onMouseOver={mouseOver}
             alt=""
         />
     )

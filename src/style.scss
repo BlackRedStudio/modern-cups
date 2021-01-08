@@ -10,3 +10,22 @@
         opacity: 1;
     }
 }
+.sjx-rotator {
+    background-color: red !important;
+    left: calc(100% - 6px) !important;
+}
+.sjx-normal {
+    display: none !important;
+}
+.sjx-hdl:not(.sjx-rotator) {
+    display: none;
+}
+#containerImages .sjx-hdl {
+    display: initial;
+}
+#containerImages .sjx-rotator {
+    left: calc(100% - 32px) !important;
+    top: calc(100% - 40px) !important;
+    width: 20px;
+    height: 20px;
+}
