@@ -14,7 +14,7 @@ const BlueprintText = ({props: {fontSize, color, fontFamily, fontWeight, fontSty
 		<div
 			className="text-draggable"
 			index={index}
-			style={{ position: 'absolute', left: 30, top: 30, padding: '20px 40px', fontSize: fontSize+'px', color: color, fontFamily: fontFamily, fontWeight: fontWeight, fontStyle: fontStyle }}
+			style={{ position: 'absolute', left: 30, top: 30, padding: 20, fontSize: fontSize+'px', color: color, fontFamily: fontFamily, fontWeight: fontWeight, fontStyle: fontStyle }}
 			onMouseOver={mouseOver}
 		>
 			{value}

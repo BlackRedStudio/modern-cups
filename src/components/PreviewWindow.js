@@ -21,7 +21,10 @@ const PreviewWindow = ({ previewImage }) => {
                 '& p': {
                     color: theme.palette.primary.main
                 }
-            }
+            },
+            '@media(max-width: 767px)': {
+                display: 'none'
+            },
         },
         previewWindowText: {
             textAlign: 'center',
