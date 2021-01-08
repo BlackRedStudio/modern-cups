@@ -1,9 +1,22 @@
 import { cupActionTypes } from './cup-types';
 
 const INITIAL_STATE = {
-	cupText: [],
+	cupText: [
+		{
+			id: 1,
+			label: 'Treść nr',
+			value: '',
+			error: null,
+			fontSize: 16,
+			color: '#000',
+			fontFamily: '',
+			variants: null,
+			fontWeight: null,
+			fontStyle: 'normal',
+		},
+	],
 	cupImage: [{ key: 0, imgPreviewUrl: null, name: '' }],
-	previewImage: null
+	previewImage: null,
 };
 
 const cupReducer = (state = INITIAL_STATE, action) => {

@@ -14,20 +14,6 @@ import AddRemoveImage from './cup-options/AddRemoveImage';
 
 class CupOptionsContainer extends Component {
 	state = {
-		textFieldsArray: [
-			{
-				id: 1,
-				label: 'Treść nr',
-				value: '',
-				error: null,
-				fontSize: 16,
-				color: '#000',
-				fontFamily: '',
-				variants: null,
-				fontWeight: null,
-				fontStyle: 'normal'
-			},
-		],
 		textFieldsError: 2,
 		textFieldsErrorMessage: 'Nie można usunąć pierwotnego pola tekstowego',
 		currentTextFieldsOptions: 0,
@@ -35,33 +21,33 @@ class CupOptionsContainer extends Component {
 		emojiData: null,
 	};
 	limitUpdate = false;
+	textField = {
+		id: null,
+		label: 'Treść nr',
+		value: '',
+		error: null,
+		fontSize: 16,
+		color: '#000',
+		fontFamily: '',
+		variants: null,
+		fontWeight: null,
+		fontStyle: 'normal',
+	};
 
 	addFieldText = () => {
-		const { textFieldsArray } = this.state;
+		const { cupText, addTextToCup } = this.props;
 
-		if (textFieldsArray.length < 4) {
-			const currentId = textFieldsArray.length + 1;
-
-			const textField = {
-				id: currentId,
-				label: 'Treść nr',
-				value: '',
-				error: null,
-				fontSize: 16,
-				color: '#000',
-				fontFamily: '',
-				variants: null,
-				fontWeight: null,
-				fontStyle: 'normal'
-			};
-
+		if (cupText.length < 4) {
+			const currentId = cupText.length + 1;
+			let newTextField = { ...this.textField };
+			newTextField.id = currentId;
 			this.setState({
-				textFieldsArray: [...textFieldsArray, textField],
 				textFieldsError: null,
 				textFieldsErrorMessage: null,
 			});
+			addTextToCup([...cupText, newTextField]);
 		}
-		if (textFieldsArray.length > 2) {
+		if (cupText.length > 2) {
 			this.setState({
 				textFieldsError: 1,
 				textFieldsErrorMessage: 'Maksymalna liczba treści to 4',
@@ -70,14 +56,12 @@ class CupOptionsContainer extends Component {
 	};
 
 	removeFieldText = () => {
-		const { textFieldsArray } = this.state;
-
-		if (textFieldsArray.length > 1) {
-			this.setState({
-				textFieldsArray: textFieldsArray.slice(0, -1),
-			});
+		const { cupText, addTextToCup } = this.props;
+		const newCupText = [...cupText];
+		if (cupText.length > 1) {
+			addTextToCup(newCupText.slice(0, -1));
 		}
-		if (textFieldsArray.length < 3) {
+		if (cupText.length < 3) {
 			this.setState({
 				textFieldsError: 2,
 				textFieldsErrorMessage: 'Nie można usunąć pierwotnego pola tekstowego',
@@ -89,34 +73,34 @@ class CupOptionsContainer extends Component {
 	};
 
 	changeFieldText = e => {
-		const { textFieldsArray } = this.state;
-
+		const { cupText, addTextToCup } = this.props;
+		let newCupText = [...cupText]
 		const fieldIndex = e.target.getAttribute('index');
 		const isEmoji = e.target.getAttribute('emoji');
 
 		let value = null;
 		let valueLength = 0;
 
-		if(!isEmoji) {
+		if (!isEmoji) {
 			value = e.target.value;
 			valueLength = e.target.value.length;
 		} else {
-			value = textFieldsArray[fieldIndex - 1].value + e.target.innerText;
-			valueLength = textFieldsArray[fieldIndex - 1].value.length + 1;
+			value = newCupText[fieldIndex - 1].value + e.target.innerText;
+			valueLength = newCupText[fieldIndex - 1].value.length + 1;
 		}
 
 		if (valueLength < 33) {
-			textFieldsArray[fieldIndex - 1].error = null;
-			textFieldsArray[fieldIndex - 1].value = value;
+			newCupText[fieldIndex - 1].error = null;
+			newCupText[fieldIndex - 1].value = value;
 		} else {
-			textFieldsArray[fieldIndex - 1].error = 'Maksymalna długość tekstu to 32 znaki';
+			newCupText[fieldIndex - 1].error = 'Maksymalna długość tekstu to 32 znaki';
 		}
-		this.setState({
-			textFieldsArray,
-		});
+		addTextToCup(newCupText);
 	};
 	changeInputField = (e, value = null, reason = null, option = null, fieldIndexParam = null) => {
-		const { textFieldsArray, fontData } = this.state;
+		const { fontData } = this.state;
+		const { cupText, addTextToCup } = this.props;
+		let newCupText = [...cupText];
 		let fieldIndex = 0;
 		let inputType = '';
 		if (e.target.tagName === 'LI') {
@@ -129,49 +113,40 @@ class CupOptionsContainer extends Component {
 		if (inputType !== 'color') {
 			let fontFamily = '';
 			if (inputType === 'fontSize') {
-				textFieldsArray[fieldIndex].fontSize = e.target.value;
+				newCupText[fieldIndex].fontSize = e.target.value;
 			} else if (inputType === 'fontFamily') {
 				fontFamily = e.target.value;
-				textFieldsArray[fieldIndex].fontFamily = fontFamily;
+				newCupText[fieldIndex].fontFamily = fontFamily;
 			} else if (inputType === 'fontFamilySelectbox') {
 				fontFamily = e.target.innerText;
-				textFieldsArray[fieldIndex].fontFamily = fontFamily;
-			} else if(inputType === 'fontVariantSelectbox') {
+				newCupText[fieldIndex].fontFamily = fontFamily;
+			} else if (inputType === 'fontVariantSelectbox') {
 				let fontWeight = e.target.value.match(/\d+/);
 				let fontStyle = e.target.value.match(/italic/i);
 				let isRegular = e.target.value.match(/regular/i);
-				if(fontWeight)
-					textFieldsArray[fieldIndex].fontWeight = fontWeight[0];
-				if(isRegular || (!fontWeight && fontStyle))
-					textFieldsArray[fieldIndex].fontWeight = '400';
-				if(fontStyle)
-					textFieldsArray[fieldIndex].fontStyle = fontStyle[0];
-				else
-				textFieldsArray[fieldIndex].fontStyle = 'normal';
+				if (fontWeight) newCupText[fieldIndex].fontWeight = fontWeight[0];
+				if (isRegular || (!fontWeight && fontStyle)) newCupText[fieldIndex].fontWeight = '400';
+				if (fontStyle) newCupText[fieldIndex].fontStyle = fontStyle[0];
+				else newCupText[fieldIndex].fontStyle = 'normal';
 			}
 			if (inputType === 'fontFamily' || inputType === 'fontFamilySelectbox') {
-				textFieldsArray[fieldIndex].fontWeight = '400';
-				textFieldsArray[fieldIndex].fontStyle = 'normal';
+				newCupText[fieldIndex].fontWeight = '400';
+				newCupText[fieldIndex].fontStyle = 'normal';
 				let moreFontData = fontData.filter(v => v.family === fontFamily);
-				if(moreFontData[0])
-					textFieldsArray[fieldIndex].variants = moreFontData[0].variants;
+				if (moreFontData[0]) newCupText[fieldIndex].variants = moreFontData[0].variants;
 			}
-			if(reason === 'clear') {
-				textFieldsArray[fieldIndexParam].fontWeight = '400';
-				textFieldsArray[fieldIndexParam].fontStyle = 'normal';
-				textFieldsArray[fieldIndexParam].fontFamily = '';
+			if (reason === 'clear') {
+				newCupText[fieldIndexParam].fontWeight = '400';
+				newCupText[fieldIndexParam].fontStyle = 'normal';
+				newCupText[fieldIndexParam].fontFamily = '';
 			}
-			this.setState({
-				textFieldsArray,
-			});
+			addTextToCup(newCupText);
 		} else if (inputType === 'color') {
-			textFieldsArray[fieldIndex].color = e.target.value;
+			newCupText[fieldIndex].color = e.target.value;
 			if (this.limitUpdate === false) {
 				this.limitUpdate = true;
 				setTimeout(() => {
-					this.setState({
-						textFieldsArray,
-					});
+					addTextToCup(newCupText);
 					this.limitUpdate = false;
 				}, 500);
 			}
@@ -183,11 +158,6 @@ class CupOptionsContainer extends Component {
 			currentTextFieldsOptions: currAttr - 1,
 		});
 	};
-
-	componentDidUpdate() {
-		const { textFieldsArray } = this.state;
-		this.props.addTextToCup(textFieldsArray);
-	}
 	componentDidMount() {
 		let apiGoogleFontsKey = 'AIzaSyDS3_wxnGJUlvJZ_SvQySSI9tGuFos3BKQ';
 
@@ -202,36 +172,32 @@ class CupOptionsContainer extends Component {
 		let apiEmojiKey = '57867ad3fe2e975e6e90fe7bbd60d50680f12fd7';
 
 		fetch('https://emoji-api.com/categories/smileys-emotion?access_key=' + apiEmojiKey)
-		.then(res => res.json())
-		.then(emojiData => {
-			this.setState({
-				emojiData
-			})
-		})
+			.then(res => res.json())
+			.then(emojiData => {
+				this.setState({
+					emojiData,
+				});
+			});
 	}
-	takeScreenshot() {
+	handleSave() {
 		const { savePreviewImage } = this.props;
 		let elToScreenshot = document.getElementById('containerParent');
-		html2canvas(elToScreenshot).then( canvas => {
+		html2canvas(elToScreenshot).then(canvas => {
 			savePreviewImage(canvas.toDataURL());
 		});
 	}
 	render() {
-		const {
-			textFieldsArray,
-			textFieldsError,
-			textFieldsErrorMessage,
-			currentTextFieldsOptions,
-			fontData,
-			emojiData,
-		} = this.state;
+		const { textFieldsError, textFieldsErrorMessage, currentTextFieldsOptions, fontData, emojiData } = this.state;
+		const { cupText } = this.props;
 		return (
 			<Box p={4}>
 				<Grid container spacing={4}>
 					<Grid item xs={12} md={6}>
-						<Typography variant="subtitle1" align="center" paragraph color="initial">Dodaj treść</Typography>
+						<Typography variant="subtitle1" align="center" paragraph color="initial">
+							Dodaj treść
+						</Typography>
 						<AddRemoveContentField
-							textFieldsArray={textFieldsArray}
+							textFieldsArray={cupText}
 							click={this.addFieldText}
 							clickSecond={this.removeFieldText}
 							textFieldsError={textFieldsError}
@@ -247,26 +213,28 @@ class CupOptionsContainer extends Component {
 							color="primary"
 							size="large"
 							startIcon={<SaveIcon />}
-							onClick={this.takeScreenshot.bind(this)}
+							onClick={this.handleSave.bind(this)}
 							fullWidth
-							style={{marginTop: 8}}
+							style={{ marginTop: 8 }}
 						>
 							Save
 						</Button>
 					</Grid>
 					<Grid className="cup-options-right-panel" item xs={12} md={6}>
-						<Typography variant="subtitle1" align="center" paragraph color="initial">Edycja treści nr {currentTextFieldsOptions + 1}</Typography>
+						<Typography variant="subtitle1" align="center" paragraph color="initial">
+							Edycja treści nr {currentTextFieldsOptions + 1}
+						</Typography>
 						<TextField
 							inputProps={{
 								index: currentTextFieldsOptions,
 								input_type: 'fontSize',
-								min: "12",
-								max: "120"
+								min: '12',
+								max: '120',
 							}}
 							label="Rozmiar czcionki"
 							type="number"
-							style={{width: 170}}
-							value={textFieldsArray[currentTextFieldsOptions].fontSize}
+							style={{ width: 170 }}
+							value={cupText[currentTextFieldsOptions].fontSize}
 							onChange={this.changeInputField}
 						/>
 						<TextField
@@ -276,7 +244,7 @@ class CupOptionsContainer extends Component {
 							}}
 							label="Kolor"
 							type="color"
-							value={textFieldsArray[currentTextFieldsOptions].color}
+							value={cupText[currentTextFieldsOptions].color}
 							onChange={this.changeInputField}
 							style={{ width: 30 }}
 						/>
@@ -287,7 +255,7 @@ class CupOptionsContainer extends Component {
 								getOptionLabel={option => option.family}
 								autoHighlight
 								onChange={(e, value, reason, option) => {
-									this.changeInputField(e, value, reason, option, currentTextFieldsOptions)
+									this.changeInputField(e, value, reason, option, currentTextFieldsOptions);
 								}}
 								ListboxProps={{
 									index: currentTextFieldsOptions,
@@ -304,12 +272,11 @@ class CupOptionsContainer extends Component {
 										}}
 										label="Wybierz czcionkę"
 										variant="outlined"
-
 									/>
 								)}
 							/>
 						)}
-						{textFieldsArray[currentTextFieldsOptions].variants &&
+						{cupText[currentTextFieldsOptions].variants && (
 							<FormControl variant="outlined" fullWidth style={{ marginTop: 24 }}>
 								<InputLabel htmlFor="outlined-age-native-simple">Wariant czcionki</InputLabel>
 								<Select
@@ -322,12 +289,14 @@ class CupOptionsContainer extends Component {
 										input_type: 'fontVariantSelectbox',
 									}}
 								>
-									{textFieldsArray[currentTextFieldsOptions].variants.map(v=>(
-										<option key={v} value={v}>{v}</option>
+									{cupText[currentTextFieldsOptions].variants.map(v => (
+										<option key={v} value={v}>
+											{v}
+										</option>
 									))}
 								</Select>
 							</FormControl>
-						}
+						)}
 					</Grid>
 				</Grid>
 			</Box>
@@ -340,4 +309,8 @@ const mapDispatchToProps = dispatch => ({
 	savePreviewImage: canvas => dispatch(savePreviewImage(canvas)),
 });
 
-export default connect(null, mapDispatchToProps)(CupOptionsContainer);
+const mapStateToProps = state => ({
+	cupText: state.cup.cupText,
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(CupOptionsContainer);
