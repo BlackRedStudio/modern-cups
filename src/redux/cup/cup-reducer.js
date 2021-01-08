@@ -15,7 +15,7 @@ const INITIAL_STATE = {
 			fontStyle: 'normal',
 		},
 	],
-	cupImage: [{ key: 0, imgPreviewUrl: null, name: '' }],
+	cupImage: [{ key: 0, imgPreviewUrl: null, name: '', width: null, height: null, matrix: null }],
 	previewImage: null,
 };
 

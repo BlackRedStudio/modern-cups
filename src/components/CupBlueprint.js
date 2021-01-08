@@ -51,14 +51,12 @@ class CupBlueprint extends Component {
 
 	}
 	handleElementMouseOver = e => {
-		console.log('element')
 		let index = e.target.getAttribute('index');
 		let sjxWrappers = document.querySelectorAll('#containerParent > .sjx-wrapper');
 		let sjxWrapper = sjxWrappers[index - 1];
 		sjxWrapper.style.display = 'initial';
 	}
 	handleImageElementMouseOver = e => {
-		console.log('image')
 		let index = e.target.getAttribute('index');
 		let sjxWrappers = document.querySelectorAll('#containerImages > .sjx-wrapper');
 		let sjxWrapper = sjxWrappers[index];
