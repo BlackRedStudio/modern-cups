@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import html2canvas from 'html2canvas';
 
-import { addTextToCup, savePreviewImage } from '../redux/cup/cup-actions';
+import { addTextToCup, savePreviewImage, addPositionData } from '../redux/cup/cup-actions';
 
 import { Box, Grid, TextField, Button, FormControl, InputLabel, Select, Typography } from '@material-ui/core';
 import SaveIcon from '@material-ui/icons/Save';
@@ -32,6 +32,7 @@ class CupOptionsContainer extends Component {
 		variants: null,
 		fontWeight: null,
 		fontStyle: 'normal',
+		transform: null,
 	};
 
 	addFieldText = () => {
@@ -180,11 +181,31 @@ class CupOptionsContainer extends Component {
 			});
 	}
 	handleSave() {
-		const { savePreviewImage } = this.props;
+		const { savePreviewImage, addPositionData } = this.props;
 		let elToScreenshot = document.getElementById('containerParent');
 		html2canvas(elToScreenshot).then(canvas => {
 			savePreviewImage(canvas.toDataURL());
 		});
+		let textsDraggable = document.querySelectorAll('.text-draggable'),
+		imagesDraggable = document.querySelectorAll('.image-draggable'),
+		textPositionDataArray = [],
+		imagePositionDataArray = [];
+
+		textsDraggable.forEach(v => {
+			let textPositionData = {};
+			textPositionData.transform = v.style.transform;
+			textPositionDataArray.push(textPositionData);
+		})
+
+		imagesDraggable.forEach(v => {
+			let imagePositionData = {};
+			imagePositionData.width = v.style.width;
+			imagePositionData.height = v.style.height;
+			imagePositionData.transform = v.style.transform;
+			imagePositionDataArray.push(imagePositionData);
+		})
+
+		addPositionData({text: textPositionDataArray, image: imagePositionDataArray});
 	}
 	render() {
 		const { textFieldsError, textFieldsErrorMessage, currentTextFieldsOptions, fontData, emojiData } = this.state;
@@ -307,6 +328,7 @@ class CupOptionsContainer extends Component {
 const mapDispatchToProps = dispatch => ({
 	addTextToCup: text => dispatch(addTextToCup(text)),
 	savePreviewImage: canvas => dispatch(savePreviewImage(canvas)),
+	addPositionData: positionData => dispatch(addPositionData(positionData)),
 });
 
 const mapStateToProps = state => ({

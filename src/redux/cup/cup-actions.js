@@ -27,3 +27,7 @@ export const savePreviewImage = canvas => ({
     type: cupActionTypes.SAVE_PREVIEW_IMAGE,
     payload: canvas
 })
+export const addPositionData = positionData => ({
+    type: cupActionTypes.ADD_POSITION_DATA,
+    payload: positionData
+})

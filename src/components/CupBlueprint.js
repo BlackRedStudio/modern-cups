@@ -15,6 +15,19 @@ class CupBlueprint extends Component {
 		this.initializeSjxLibrary();
 	}
 	componentDidMount() {
+		const { cupText, cupImage } = this.props.cup;
+		if(cupImage.length > 0) {
+			let imagesDraggable = document.querySelectorAll('.image-draggable');
+			imagesDraggable.forEach((v, k) => {
+				v.style.width = cupImage[k].width;
+				v.style.height = cupImage[k].height;
+				v.style.transform = cupImage[k].transform;
+			})
+		}
+		if(cupText.length > 0) {
+			let textsDraggable = document.querySelectorAll('.text-draggable');
+			textsDraggable.forEach((v, k) => v.style.transform = cupText[k].transform);
+		}
 		this.initializeSjxLibrary();
 	}
 	initializeSjxLibrary = () => {

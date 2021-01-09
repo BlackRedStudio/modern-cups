@@ -13,9 +13,10 @@ const INITIAL_STATE = {
 			variants: null,
 			fontWeight: null,
 			fontStyle: 'normal',
+			transform: null,
 		},
 	],
-	cupImage: [{ key: 0, imgPreviewUrl: null, name: '', width: null, height: null, matrix: null }],
+	cupImage: [{ key: 0, imgPreviewUrl: null, name: '', width: null, height: null, transform: null }],
 	previewImage: null,
 };
 
@@ -52,6 +53,22 @@ const cupReducer = (state = INITIAL_STATE, action) => {
 			return {
 				...state,
 				previewImage: action.payload,
+			};
+		case cupActionTypes.ADD_POSITION_DATA:
+			const positionDataText = action.payload.text;
+			const positionDataImage = action.payload.image;
+			return {
+				...state,
+				cupText: state.cupText.map(v => {
+					v.transform = positionDataText[v.id - 1].transform;
+					return v;
+				}),
+				cupImage: positionDataImage.length > 0 ? state.cupImage.map(v => {
+					v.width = positionDataImage[v.key].width;
+					v.height = positionDataImage[v.key].height;
+					v.transform = positionDataImage[v.key].transform;
+					return v;
+				}) : state.cupImage,
 			};
 		default:
 			return state;
