@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
+import { changeTextFieldsOptions } from '../redux/cup/cup-actions';
+
 import subjx from 'subjx';
 import 'subjx/dist/style/subjx.css';
 import BlueprintImage from './cup-blueprint-elements/BlueprintImage';
@@ -12,6 +14,7 @@ class CupBlueprint extends Component {
 	isRotating = false;
 
 	componentDidUpdate() {
+		console.log('object')
 		this.initializeSjxLibrary();
 	}
 	componentDidMount() {
@@ -64,10 +67,12 @@ class CupBlueprint extends Component {
 
 	}
 	handleElementMouseOver = e => {
+		const {changeTextFieldsOptions} = this.props;
 		let index = e.target.getAttribute('index');
 		let sjxWrappers = document.querySelectorAll('#containerParent > .sjx-wrapper');
 		let sjxWrapper = sjxWrappers[index - 1];
 		sjxWrapper.style.display = 'initial';
+		changeTextFieldsOptions(index - 1)
 	}
 	handleImageElementMouseOver = e => {
 		let index = e.target.getAttribute('index');
@@ -106,8 +111,14 @@ class CupBlueprint extends Component {
 	}
 }
 
+const areStatesEqual = (next, prev) => prev.cup.cupText === next.cup.cupText && prev.cup.cupImage === next.cup.cupImage
+
 const mapStateToProps = state => ({
 	cup: state.cup,
 });
 
-export default connect(mapStateToProps)(CupBlueprint);
+const mapDispatchToProps = dispatch => ({
+	changeTextFieldsOptions: numberOfField => dispatch(changeTextFieldsOptions(numberOfField)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps, null, {areStatesEqual})(CupBlueprint);

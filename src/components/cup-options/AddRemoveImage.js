@@ -25,7 +25,8 @@ const AddRemoveImage = ({ cupImage, addImageToCup, addImageToCupRow, deleteImage
 		    reader.readAsDataURL(file);
     };
     const handleAddClick = () => {
-        addImageToCupRow({key: cupImage.length, imgPreviewUrl: null, name: ""});
+		if(cupImage.length < 3)
+        	addImageToCupRow({key: cupImage.length, imgPreviewUrl: null, name: ""});
     }
     const handleRemoveClick = () => {
         if(cupImage.length > 1)
@@ -55,12 +56,14 @@ const AddRemoveImage = ({ cupImage, addImageToCup, addImageToCupRow, deleteImage
 			{inputsFile}
 			<Box p={3} textAlign="center">
 				<Tooltip title={'Dodaj kolejną treść'} aria-label="add" onClick={handleAddClick}>
-					<Fab style={{ marginRight: 16 }}>
+					<Fab color={cupImage.length < 3 ? 'primary' : 'default'} style={{ marginRight: 16 }}>
 						<AddIcon />
 					</Fab>
 				</Tooltip>
 				<Tooltip title="Usuń wiersz" aria-label="remove" onClick={handleRemoveClick}>
-					<Fab>
+					<Fab style={
+						cupImage.length > 1 ? { backgroundColor: colorError } : { backgroundColor: colorDefault }
+					}>
 						<RemoveIcon />
 					</Fab>
 				</Tooltip>

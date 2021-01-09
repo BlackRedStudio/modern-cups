@@ -16,6 +16,7 @@ const INITIAL_STATE = {
 			transform: null,
 		},
 	],
+	currentTextFieldsOptions: 0,
 	cupImage: [{ key: 0, imgPreviewUrl: null, name: '', width: null, height: null, transform: null }],
 	previewImage: null,
 };
@@ -69,6 +70,11 @@ const cupReducer = (state = INITIAL_STATE, action) => {
 					v.transform = positionDataImage[v.key].transform;
 					return v;
 				}) : state.cupImage,
+			};
+		case cupActionTypes.CHANGE_TEXT_FIELD_OPTIONS:
+			return {
+				...state,
+				currentTextFieldsOptions: action.payload,
 			};
 		default:
 			return state;

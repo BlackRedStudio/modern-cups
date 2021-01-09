@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import html2canvas from 'html2canvas';
 
-import { addTextToCup, savePreviewImage, addPositionData } from '../redux/cup/cup-actions';
+import { addTextToCup, savePreviewImage, addPositionData, changeTextFieldsOptions } from '../redux/cup/cup-actions';
 
 import { Box, Grid, TextField, Button, FormControl, InputLabel, Select, Typography } from '@material-ui/core';
 import SaveIcon from '@material-ui/icons/Save';
@@ -16,7 +16,6 @@ class CupOptionsContainer extends Component {
 	state = {
 		textFieldsError: 2,
 		textFieldsErrorMessage: 'Nie można usunąć pierwotnego pola tekstowego',
-		currentTextFieldsOptions: 0,
 		fontData: null,
 		emojiData: null,
 	};
@@ -57,7 +56,7 @@ class CupOptionsContainer extends Component {
 	};
 
 	removeFieldText = () => {
-		const { cupText, addTextToCup } = this.props;
+		const { cupText, addTextToCup, changeTextFieldsOptions } = this.props;
 		const newCupText = [...cupText];
 		if (cupText.length > 1) {
 			addTextToCup(newCupText.slice(0, -1));
@@ -68,9 +67,7 @@ class CupOptionsContainer extends Component {
 				textFieldsErrorMessage: 'Nie można usunąć pierwotnego pola tekstowego',
 			});
 		}
-		this.setState({
-			currentTextFieldsOptions: 0,
-		});
+		changeTextFieldsOptions(0);
 	};
 
 	changeFieldText = e => {
@@ -154,10 +151,10 @@ class CupOptionsContainer extends Component {
 		}
 	};
 	focusFieldText = e => {
+		const {changeTextFieldsOptions} = this.props;
 		let currAttr = e.target.getAttribute('index');
-		this.setState({
-			currentTextFieldsOptions: currAttr - 1,
-		});
+
+		changeTextFieldsOptions(currAttr - 1);
 	};
 	componentDidMount() {
 		let apiGoogleFontsKey = 'AIzaSyDS3_wxnGJUlvJZ_SvQySSI9tGuFos3BKQ';
@@ -208,8 +205,8 @@ class CupOptionsContainer extends Component {
 		addPositionData({text: textPositionDataArray, image: imagePositionDataArray});
 	}
 	render() {
-		const { textFieldsError, textFieldsErrorMessage, currentTextFieldsOptions, fontData, emojiData } = this.state;
-		const { cupText } = this.props;
+		const { textFieldsError, textFieldsErrorMessage, fontData, emojiData } = this.state;
+		const { cupText, currentTextFieldsOptions } = this.props;
 		return (
 			<Box p={4}>
 				<Grid container spacing={4}>
@@ -329,10 +326,12 @@ const mapDispatchToProps = dispatch => ({
 	addTextToCup: text => dispatch(addTextToCup(text)),
 	savePreviewImage: canvas => dispatch(savePreviewImage(canvas)),
 	addPositionData: positionData => dispatch(addPositionData(positionData)),
+	changeTextFieldsOptions: numberOfField => dispatch(changeTextFieldsOptions(numberOfField)),
 });
 
 const mapStateToProps = state => ({
 	cupText: state.cup.cupText,
+	currentTextFieldsOptions: state.cup.currentTextFieldsOptions
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CupOptionsContainer);

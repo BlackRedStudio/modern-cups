@@ -31,3 +31,7 @@ export const addPositionData = positionData => ({
     type: cupActionTypes.ADD_POSITION_DATA,
     payload: positionData
 })
+export const changeTextFieldsOptions = numberOfField => ({
+    type: cupActionTypes.CHANGE_TEXT_FIELD_OPTIONS,
+    payload: numberOfField
+})
