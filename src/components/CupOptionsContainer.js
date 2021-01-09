@@ -323,8 +323,8 @@ class CupOptionsContainer extends Component {
 									index: currentTextFieldsOptions,
 									input_type: 'fontFamilySelectbox',
 								}}
+								onKeyUp={e => e.keyCode === 13 && this.changeInputField(e)}
 								onKeyDown={e => {
-									e.keyCode === 13 && this.changeInputField(e);
 									if(e.keyCode === 13) {
 										let listbox = document.querySelector('.MuiAutocomplete-listbox li[data-focus="true"]')
 										setTimeout(()=>{
