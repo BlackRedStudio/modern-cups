@@ -1,7 +1,9 @@
 import React from 'react';
+import { connect } from 'react-redux';
+
 import { TextField, Button, Typography } from '@material-ui/core';
 
-const ContactForm = () => {
+const ContactForm = ({previewImage}) => {
 	const [contactContent, setContactContent] = React.useState({
 		name: '',
 		companyName: '',
@@ -37,12 +39,19 @@ const ContactForm = () => {
 					Wyślij
 				</Button>
 			</form>
-			<Typography>Podgląd wiadomości</Typography>
-			<ol>
-				{Object.values(contactContent).map((v, k) => <li key={k}>{v}</li>)}
-			</ol>
+			<Typography style={{marginBottom: 20}}>Podgląd wiadomości</Typography>
+			{contactContent.name && (<div style={{marginBottom: 10}}>Imię: <em>{contactContent.name}</em></div>)}
+			{contactContent.companyName && (<div style={{marginBottom: 10}}>Nazwa firmy: <em>{contactContent.companyName}</em></div>)}
+			{contactContent.email && (<div style={{marginBottom: 10}}>Email: <em>{contactContent.email}</em></div>)}
+			{contactContent.subject && (<div style={{marginBottom: 10}}>Temat: <em>{contactContent.subject}</em></div>)}
+			{contactContent.desc && (<div style={{marginBottom: 30}}>Opis: <em>{contactContent.desc}</em></div>)}
+			{previewImage && (<img style={{maxWidth: 300, maxHeight: 300}} src={previewImage} alt=""/>)}
 		</>
 	);
 };
 
-export default ContactForm;
+const mapStateToProps = state => ({
+	previewImage: state.cup.previewImage,
+});
+
+export default connect(mapStateToProps)(ContactForm);

@@ -11,7 +11,7 @@ const Banner = ({previewImage}) => {
 				<Grid item xs={12} md={6}>
 					<img
 					style={{objectFit: 'cover'}}
-						src={previewImage || "https://via.placeholder.com/900x900"}
+						src={previewImage || "./img/kubek1.jpg"}
 						alt="Banner"
 					/>
 				</Grid>
