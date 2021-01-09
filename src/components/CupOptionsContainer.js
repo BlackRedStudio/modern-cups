@@ -33,7 +33,7 @@ class CupOptionsContainer extends Component {
 		fontStyle: 'normal',
 		transform: null,
 	};
-
+	cupOptionsRightPanel = React.createRef();
 	addFieldText = () => {
 		const { cupText, addTextToCup } = this.props;
 
@@ -68,7 +68,11 @@ class CupOptionsContainer extends Component {
 			});
 		}
 		changeTextFieldsOptions(0);
+
 	};
+	componentDidUpdate(prevProps) {
+		if(prevProps.currentTextFieldsOptions !== this.props.currentTextFieldsOptions) this.animateRightPanel();
+	}
 
 	changeFieldText = e => {
 		const { cupText, addTextToCup } = this.props;
@@ -155,7 +159,14 @@ class CupOptionsContainer extends Component {
 		let currAttr = e.target.getAttribute('index');
 
 		changeTextFieldsOptions(currAttr - 1);
+
 	};
+	animateRightPanel = () => {
+		this.cupOptionsRightPanel.current.classList.toggle('cup-options-right-panel');
+		setTimeout(()=>{
+			this.cupOptionsRightPanel.current.classList.toggle('cup-options-right-panel');
+		}, 1)
+	}
 	componentDidMount() {
 		let apiGoogleFontsKey = 'AIzaSyDS3_wxnGJUlvJZ_SvQySSI9tGuFos3BKQ';
 
@@ -238,7 +249,7 @@ class CupOptionsContainer extends Component {
 							Save
 						</Button>
 					</Grid>
-					<Grid className="cup-options-right-panel" item xs={12} md={6}>
+					<Grid ref={this.cupOptionsRightPanel} className="cup-options-right-panel" item xs={12} md={6}>
 						<Typography variant="subtitle1" align="center" paragraph color="initial">
 							Edycja treści nr {currentTextFieldsOptions + 1}
 						</Typography>

@@ -14,7 +14,6 @@ class CupBlueprint extends Component {
 	isRotating = false;
 
 	componentDidUpdate() {
-		console.log('object')
 		this.initializeSjxLibrary();
 	}
 	componentDidMount() {
