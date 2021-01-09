@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import html2canvas from 'html2canvas';
 
-import { addTextToCup, savePreviewImage, addPositionData, changeTextFieldsOptions } from '../redux/cup/cup-actions';
+import { addTextToCup, savePreviewImage, addPositionData, changeTextFieldsOptions, fontFamilySearch } from '../redux/cup/cup-actions';
 
 import { Box, Grid, TextField, Button, FormControl, InputLabel, Select, Typography } from '@material-ui/core';
 import SaveIcon from '@material-ui/icons/Save';
@@ -32,6 +32,7 @@ class CupOptionsContainer extends Component {
 		fontWeight: null,
 		fontStyle: 'normal',
 		transform: null,
+		fontFamilySearchQuery: '',
 	};
 	cupOptionsRightPanel = React.createRef();
 	addFieldText = () => {
@@ -162,9 +163,21 @@ class CupOptionsContainer extends Component {
 
 	};
 	animateRightPanel = () => {
-		this.cupOptionsRightPanel.current.classList.toggle('cup-options-right-panel');
+		// const { cupText } = this.props;
+		let rightPanel = this.cupOptionsRightPanel.current;
+		// let currentId = rightPanel.getAttribute('index');
+		// let currentFont = cupText[currentId].fontFamily;
+		// let fontFamilyInput = rightPanel.childNodes[3].getElementsByClassName('MuiInputBase-input');
+		// let fontFamilyLabel = rightPanel.childNodes[3].getElementsByClassName('MuiFormLabel-root');
+		// let fontFamilyLegend = rightPanel.childNodes[3].getElementsByTagName('legend');
+		// fontFamilyInput[0].value = currentFont;
+		// if(currentFont !== '') {
+		// 	fontFamilyLabel[0].classList.add('MuiInputLabel-shrink');
+		// 	fontFamilyLegend[0].classList.add('PrivateNotchedOutline-legendNotched-21');
+		// };
+		rightPanel.classList.toggle('cup-options-right-panel');
 		setTimeout(()=>{
-			this.cupOptionsRightPanel.current.classList.toggle('cup-options-right-panel');
+			rightPanel.classList.toggle('cup-options-right-panel');
 		}, 1)
 	}
 	componentDidMount() {
@@ -217,7 +230,7 @@ class CupOptionsContainer extends Component {
 	}
 	render() {
 		const { textFieldsError, textFieldsErrorMessage, fontData, emojiData } = this.state;
-		const { cupText, currentTextFieldsOptions } = this.props;
+		const { cupText, currentTextFieldsOptions, fontFamilySearch } = this.props;
 		return (
 			<Box p={4}>
 				<Grid container spacing={4}>
@@ -249,7 +262,7 @@ class CupOptionsContainer extends Component {
 							Save
 						</Button>
 					</Grid>
-					<Grid ref={this.cupOptionsRightPanel} className="cup-options-right-panel" item xs={12} md={6}>
+					<Grid ref={this.cupOptionsRightPanel} index={currentTextFieldsOptions} className="cup-options-right-panel" item xs={12} md={6}>
 						<Typography variant="subtitle1" align="center" paragraph color="initial">
 							Edycja treści nr {currentTextFieldsOptions + 1}
 						</Typography>
@@ -285,12 +298,40 @@ class CupOptionsContainer extends Component {
 								autoHighlight
 								onChange={(e, value, reason, option) => {
 									this.changeInputField(e, value, reason, option, currentTextFieldsOptions);
+
+									let thisTarget = e.target;
+									window.xd = thisTarget;
+									if(reason === 'select-option') {
+										setTimeout(()=>{
+											fontFamilySearch({index: currentTextFieldsOptions, value: thisTarget.innerText})
+										}, 10);
+										return false;
+									}
+									if(reason === 'clear') {
+										setTimeout(()=>{
+											fontFamilySearch({index: currentTextFieldsOptions, value: ''})
+										}, 10);
+										return false;
+									}
+
+									setTimeout(()=>{
+										fontFamilySearch({index: currentTextFieldsOptions, value: thisTarget.innerText})
+									}, 10)
 								}}
+								inputValue={cupText[currentTextFieldsOptions].fontFamilySearchQuery}
 								ListboxProps={{
 									index: currentTextFieldsOptions,
 									input_type: 'fontFamilySelectbox',
 								}}
-								onKeyUp={e => e.keyCode === 13 && this.changeInputField(e)}
+								onKeyDown={e => {
+									e.keyCode === 13 && this.changeInputField(e);
+									if(e.keyCode === 13) {
+										let listbox = document.querySelector('.MuiAutocomplete-listbox li[data-focus="true"]')
+										setTimeout(()=>{
+											fontFamilySearch({index: currentTextFieldsOptions, value: listbox.innerText})
+										}, 10)
+									}
+								}}
 								renderInput={params => (
 									<TextField
 										{...params}
@@ -299,6 +340,7 @@ class CupOptionsContainer extends Component {
 											index: currentTextFieldsOptions,
 											input_type: 'fontFamily',
 										}}
+										onChange={e => fontFamilySearch({index: currentTextFieldsOptions, value: e.target.value})}
 										label="Wybierz czcionkę"
 										variant="outlined"
 									/>
@@ -338,6 +380,7 @@ const mapDispatchToProps = dispatch => ({
 	savePreviewImage: canvas => dispatch(savePreviewImage(canvas)),
 	addPositionData: positionData => dispatch(addPositionData(positionData)),
 	changeTextFieldsOptions: numberOfField => dispatch(changeTextFieldsOptions(numberOfField)),
+	fontFamilySearch: searchQuery => dispatch(fontFamilySearch(searchQuery)),
 });
 
 const mapStateToProps = state => ({

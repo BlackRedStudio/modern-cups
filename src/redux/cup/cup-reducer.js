@@ -14,6 +14,7 @@ const INITIAL_STATE = {
 			fontWeight: null,
 			fontStyle: 'normal',
 			transform: null,
+			fontFamilySearchQuery: '',
 		},
 	],
 	currentTextFieldsOptions: 0,
@@ -75,6 +76,18 @@ const cupReducer = (state = INITIAL_STATE, action) => {
 			return {
 				...state,
 				currentTextFieldsOptions: action.payload,
+			};
+		case cupActionTypes.FONT_FAMILY_SEARCH:
+			const index = action.payload.index;
+			const value = action.payload.value;
+			return {
+				...state,
+				cupText: state.cupText.map(v => {
+					if(v.id === index + 1) {
+						v.fontFamilySearchQuery = value;
+					}
+					return v;
+				}),
 			};
 		default:
 			return state;

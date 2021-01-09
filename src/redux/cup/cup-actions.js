@@ -35,3 +35,7 @@ export const changeTextFieldsOptions = numberOfField => ({
     type: cupActionTypes.CHANGE_TEXT_FIELD_OPTIONS,
     payload: numberOfField
 })
+export const fontFamilySearch = searchQuery => ({
+    type: cupActionTypes.FONT_FAMILY_SEARCH,
+    payload: searchQuery
+})
