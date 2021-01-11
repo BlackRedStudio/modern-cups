@@ -7,7 +7,7 @@ const INITIAL_STATE = {
 			label: 'Treść nr',
 			value: '',
 			error: null,
-			fontSize: 16,
+			fontSize: 24,
 			color: '#000',
 			fontFamily: '',
 			variants: null,

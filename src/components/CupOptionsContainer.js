@@ -25,7 +25,7 @@ class CupOptionsContainer extends Component {
 		label: 'Treść nr',
 		value: '',
 		error: null,
-		fontSize: 16,
+		fontSize: 24,
 		color: '#000',
 		fontFamily: '',
 		variants: null,
@@ -163,18 +163,7 @@ class CupOptionsContainer extends Component {
 
 	};
 	animateRightPanel = () => {
-		// const { cupText } = this.props;
 		let rightPanel = this.cupOptionsRightPanel.current;
-		// let currentId = rightPanel.getAttribute('index');
-		// let currentFont = cupText[currentId].fontFamily;
-		// let fontFamilyInput = rightPanel.childNodes[3].getElementsByClassName('MuiInputBase-input');
-		// let fontFamilyLabel = rightPanel.childNodes[3].getElementsByClassName('MuiFormLabel-root');
-		// let fontFamilyLegend = rightPanel.childNodes[3].getElementsByTagName('legend');
-		// fontFamilyInput[0].value = currentFont;
-		// if(currentFont !== '') {
-		// 	fontFamilyLabel[0].classList.add('MuiInputLabel-shrink');
-		// 	fontFamilyLegend[0].classList.add('PrivateNotchedOutline-legendNotched-21');
-		// };
 		rightPanel.classList.toggle('cup-options-right-panel');
 		setTimeout(()=>{
 			rightPanel.classList.toggle('cup-options-right-panel');
@@ -231,6 +220,10 @@ class CupOptionsContainer extends Component {
 	render() {
 		const { textFieldsError, textFieldsErrorMessage, fontData, emojiData } = this.state;
 		const { cupText, currentTextFieldsOptions, fontFamilySearch } = this.props;
+		let fontStyle = cupText[currentTextFieldsOptions].fontStyle;
+		let fontWeight = cupText[currentTextFieldsOptions].fontWeight;
+		if(fontStyle === 'italic') fontStyle = fontWeight + fontStyle;
+		else fontStyle = fontWeight;
 		return (
 			<Box p={4}>
 				<Grid container spacing={4}>
@@ -354,7 +347,7 @@ class CupOptionsContainer extends Component {
 									native
 									onChange={this.changeInputField}
 									label="Wariant czcionki"
-									defaultValue="regular"
+									value={fontStyle}
 									inputProps={{
 										index: currentTextFieldsOptions,
 										input_type: 'fontVariantSelectbox',
