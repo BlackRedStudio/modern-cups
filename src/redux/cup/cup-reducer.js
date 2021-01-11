@@ -66,9 +66,11 @@ const cupReducer = (state = INITIAL_STATE, action) => {
 					return v;
 				}),
 				cupImage: positionDataImage.length > 0 ? state.cupImage.map(v => {
-					v.width = positionDataImage[v.key].width;
-					v.height = positionDataImage[v.key].height;
-					v.transform = positionDataImage[v.key].transform;
+					if(v.name !== '') {
+						v.width = positionDataImage[v.key].width;
+						v.height = positionDataImage[v.key].height;
+						v.transform = positionDataImage[v.key].transform;
+					}
 					return v;
 				}) : state.cupImage,
 			};
